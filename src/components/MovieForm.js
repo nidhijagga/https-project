@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function MovieForm() {
+function MovieForm(props) {
     const [title,settitle]=useState('')
     const [openingText,setopeningText]=useState('')
     const [date,setdate]=useState('')
@@ -8,16 +8,18 @@ function MovieForm() {
     const handleform =(e)=>{
         e.preventDefault()
 
-        const data = {
+        const movie = {
             title:title,
             openingText:openingText,
             date:new Date(date)
         }
 
-        console.log(data)
+        console.log(movie)
         settitle('')
         setdate('')
         setopeningText('')
+
+        props.handlemovieForm(movie)
     }
   return (
     <div style={{margin
@@ -36,4 +38,4 @@ function MovieForm() {
   )
 }
 
-export default MovieForm;
+export default MovieForm

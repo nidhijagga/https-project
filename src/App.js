@@ -13,29 +13,36 @@ function App() {
 
   
   
-  const fetchHandler = useCallback(async ()=>{
+  const fetchHandler = useCallback(async (movie)=>{
     setisLoading(true)
     seterror(null)
     
     try{
-    const response=  await fetch('https://swapi.py4e.com/api/films/')
+    const response=  await fetch('https://react-project-b57c5-default-rtdb.firebaseio.com/movie.json')
       if (!response.ok) {
         throw new Error('Something went wrong ....Retrying')
         
       }
     
       const data = await response.json()
+      console.log(data)
+
+      const Loadeddata =[]
+
+      for(const key in data){
+        Loadeddata.push(
+          {
+            id:key,
+            title:data[key].title,
+            openingText:data[key].openingText,
+            data: new Date(data[key].date)
+          }
+        )
+      }
       
-          const maindata = data.results.map(item=>{
-            return{
-              id:item.episode_id,
-              title:item.title,
-              openingText:item.opening_crawl,
-              releaseDate:item.release_date
-    
-            }
-          })
-          setmovie(maindata)
+      
+         
+          setmovie(Loadeddata)
           setisLoading(false)
 
     }catch(error){
@@ -60,17 +67,47 @@ function App() {
     }
     
   
-  
-  
+  async function Movieformhandler(movie){
+    const response=  await fetch('https://react-project-b57c5-default-rtdb.firebaseio.com/movie.json',{
+      method:'POST',
+      body:JSON.stringify(movie),
+      headers:{
+        'Content-Type': 'application/json'
+      }}
+    )
+
+    const data = await response.JSON()
+  }
+
+
+  const deleteMovieHandler = async (id) => {
+    
+    console.log({ id });
+    await fetch(
+      `https://react-project-b57c5-default-rtdb.firebaseio.com/movie/${id}.json`,
+      {
+        method: "DELETE",
+        body: JSON.stringify(id),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    fetchHandler();
+  };
   return (
     <React.Fragment>
       <section>
-        <MovieForm />
+      <MoviesList deleteRequested = {deleteMovieHandler} movies = {movie}/>
+      
+        <MovieForm handlemovieForm ={Movieformhandler}  />
+       <button onClick={deleteMovieHandler}>Delete Movie</button>
         <button onClick={fetchHandler}>Fetch Movies</button>
       </section>
       <section>
         {content}
       </section>
+      
     </React.Fragment>
   );
 }
