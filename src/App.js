@@ -1,31 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
 
-function App() {
-  const dummyMovies = [
-    {
-      id: 1,
-      title: 'Some Dummy Movie',
-      openingText: 'This is the opening text of the movie',
-      releaseDate: '2021-05-18',
-    },
-    {
-      id: 2,
-      title: 'Some Dummy Movie 2',
-      openingText: 'This is the second opening text of the movie',
-      releaseDate: '2021-05-19',
-    },
-  ];
 
+function App() {
+  const [movie ,setmovie] =useState([])
+  async function fectchhandler(){
+  const response=  await fetch('https://swapi.py4e.com/api/films/')
+  const data = await response.json()
+
+      const maindata = data.results.map(item=>{
+        return{
+          id:item.episode_id,
+          title:item.title,
+          openingText:item.opening_crawl,
+          releaseDate:item.release_date
+
+        }
+      })
+      setmovie(maindata)
+    }
+  
+  
   return (
     <React.Fragment>
       <section>
-        <button>Fetch Movies</button>
+        <button onClick={fectchhandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={dummyMovies} />
+        <MoviesList movies={movie} />
       </section>
     </React.Fragment>
   );
