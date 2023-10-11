@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -8,12 +8,15 @@ function App() {
   const [movie ,setmovie] =useState([])
   const [isLoading,setisLoading]=useState(false)
   const [error,seterror]=useState(null)
+
+  useEffect(fetchHandler,[])
+  
   async function fetchHandler(){
     setisLoading(true)
     seterror(null)
     
     try{
-      const response=  await fetch('https://swapi.py4e.com/api/film/')
+    const response=  await fetch('https://swapi.py4e.com/api/films/')
       if (!response.ok) {
         throw new Error('Something went wrong ....Retrying')
         
