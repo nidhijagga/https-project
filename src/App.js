@@ -6,7 +6,9 @@ import './App.css';
 
 function App() {
   const [movie ,setmovie] =useState([])
+  const [isLoading,setisLoading]=useState(false)
   async function fectchhandler(){
+    setisLoading(true)
   const response=  await fetch('https://swapi.py4e.com/api/films/')
   const data = await response.json()
 
@@ -20,6 +22,7 @@ function App() {
         }
       })
       setmovie(maindata)
+      setisLoading(false)
     }
   
   
@@ -29,7 +32,8 @@ function App() {
         <button onClick={fectchhandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movie} />
+        {!isLoading&&<MoviesList movies={movie} />}
+        {isLoading&&<p>Loading.......</p>}
       </section>
     </React.Fragment>
   );
